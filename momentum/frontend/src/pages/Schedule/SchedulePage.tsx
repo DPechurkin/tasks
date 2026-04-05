@@ -76,11 +76,25 @@ export default function SchedulePage() {
       <div className="row h-100">
         {/* Левая панель */}
         <div className="col-md-4 border-end border-secondary overflow-auto">
-          <MonthNavigator
-            year={navYear}
-            month={navMonth}
-            onChange={(y, m) => { setNavYear(y); setNavMonth(m) }}
-          />
+          <div className="d-flex justify-content-between align-items-center mb-2">
+            <MonthNavigator
+              year={navYear}
+              month={navMonth}
+              onChange={(y, m) => { setNavYear(y); setNavMonth(m) }}
+            />
+            <button
+              className="btn btn-sm btn-outline-success ms-2 flex-shrink-0"
+              onClick={() => {
+                const todayStr = formatDate(new Date())
+                setSelectedDate(todayStr)
+                setNavYear(today.getFullYear())
+                setNavMonth(today.getMonth() + 1)
+              }}
+              title="Перейти на сегодня"
+            >
+              <i className="bi bi-calendar-check me-1"></i>Сегодня
+            </button>
+          </div>
 
           {/* Три сетки: прошлый, текущий (выбранный), следующий */}
           <MonthGrid
