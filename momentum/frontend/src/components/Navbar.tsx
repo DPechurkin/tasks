@@ -4,10 +4,10 @@ export default function Navbar() {
   return (
     <nav className="navbar navbar-dark bg-dark border-bottom border-secondary sticky-top">
       <div className="container-fluid">
-        <span className="navbar-brand fw-bold">
+        <NavLink to="/ideas" className="navbar-brand fw-bold text-decoration-none text-white">
           <i className="bi bi-lightning-charge-fill text-warning me-2"></i>
           Momentum
-        </span>
+        </NavLink>
         <div className="d-flex gap-1">
           <NavLink
             to="/ideas"
