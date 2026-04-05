@@ -1,0 +1,14 @@
+**/node_modules
+**/.git
+npm-debug.log
+
+# Собранные артефакты — пересобираются внутри Docker
+backend/dist
+backend/public
+frontend/dist
+
+# Данные БД
+data/*.db
+
+# Локальный конфиг порта
+.momentum_port

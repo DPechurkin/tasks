@@ -1,0 +1,13 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1775398350031,
+      "tag": "0000_burly_the_phantom",
+      "breakpoints": true
+    }
+  ]
+}

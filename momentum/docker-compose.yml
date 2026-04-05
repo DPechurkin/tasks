@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${MOMENTUM_PORT:-3030}:3000"
+    volumes:
+      - momentum_data:/app/data
+    environment:
+      - NODE_ENV=production
+      - DB_PATH=/app/data/momentum.db
+      - PORT=3000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  momentum_data:
+    driver: local
