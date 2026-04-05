@@ -51,7 +51,7 @@ export default function App() {
             <Route path="/ideas/:id" element={<IdeaDetailPage />} />
             <Route path="/plans" element={<PlansPage />} />
             <Route path="/plans/:id" element={<PlanDetailPage />} />
-            <Route path="/plans/:planId/tasks/:taskId" element={<TaskDetailPage />} />
+            <Route path="/plans/:planId/tasks/:id" element={<TaskDetailPage />} />
             <Route path="/schedule" element={<SchedulePage />} />
             <Route path="/schedule/:date" element={<SchedulePage />} />
           </Routes>
