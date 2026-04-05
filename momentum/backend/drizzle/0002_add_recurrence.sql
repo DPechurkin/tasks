@@ -11,5 +11,5 @@ CREATE TABLE recurrence_rules (
   end_date TEXT NOT NULL,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
-
+--> statement-breakpoint
 ALTER TABLE scheduled_slots ADD COLUMN recurrence_rule_id INTEGER REFERENCES recurrence_rules(id) ON DELETE SET NULL;
