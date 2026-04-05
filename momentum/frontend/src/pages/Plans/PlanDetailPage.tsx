@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import {
   DndContext,
@@ -72,6 +72,15 @@ export default function PlanDetailPage() {
 
   const [planModalOpen, setPlanModalOpen] = useState(false)
   const [confirmDeletePlan, setConfirmDeletePlan] = useState(false)
+  const [newTaskId, setNewTaskId] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (newTaskId === null) return
+    setTimeout(() => {
+      document.getElementById(`task-${newTaskId}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      setNewTaskId(null)
+    }, 50)
+  }, [newTaskId])
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -122,6 +131,7 @@ export default function PlanDetailPage() {
           return next
         })
       }
+      setNewTaskId(created.id)
     }
   }, [plan, editingTask, insertTaskAfter])
 
@@ -245,7 +255,8 @@ export default function PlanDetailPage() {
       <hr className="border-secondary" />
 
       {/* Задачи */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="d-flex justify-content-between align-items-center bg-dark"
+        style={{ position: 'sticky', top: '56px', zIndex: 100, padding: '12px 0', marginBottom: '1rem' }}>
         <h5 className="mb-0">Задачи ({tasks.length})</h5>
         <button
           className="btn btn-outline-primary btn-sm"
@@ -268,14 +279,15 @@ export default function PlanDetailPage() {
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
           {tasks.map((task, index) => (
-            <SortableTaskCard
-              key={task.id}
-              task={task}
-              index={index}
-              onEdit={() => openEditTaskModal(task)}
-              onDelete={() => setConfirmDeleteTask({ id: task.id, title: task.title })}
-              onStatusChange={(status) => handleStatusChange(task, status)}
-            />
+            <div key={task.id} id={`task-${task.id}`}>
+              <SortableTaskCard
+                task={task}
+                index={index}
+                onEdit={() => openEditTaskModal(task)}
+                onDelete={() => setConfirmDeleteTask({ id: task.id, title: task.title })}
+                onStatusChange={(status) => handleStatusChange(task, status)}
+              />
+            </div>
           ))}
         </SortableContext>
       </DndContext>

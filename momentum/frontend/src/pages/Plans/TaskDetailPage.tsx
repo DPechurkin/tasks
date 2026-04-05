@@ -136,6 +136,15 @@ export default function TaskDetailPage() {
   const [editingSubtask, setEditingSubtask] = useState<Task | null>(null)
   const [insertSubtaskAfter, setInsertSubtaskAfter] = useState<number | null | undefined>(undefined)
   const [confirmDeleteSubtask, setConfirmDeleteSubtask] = useState<{ id: number; title: string } | null>(null)
+  const [newSubtaskId, setNewSubtaskId] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (newSubtaskId === null) return
+    setTimeout(() => {
+      document.getElementById(`subtask-${newSubtaskId}`)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+      setNewSubtaskId(null)
+    }, 50)
+  }, [newSubtaskId])
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -220,6 +229,7 @@ export default function TaskDetailPage() {
           return next
         })
       }
+      setNewSubtaskId(created.id)
     }
   }, [task, editingSubtask, insertSubtaskAfter])
 
@@ -325,7 +335,8 @@ export default function TaskDetailPage() {
       )}
 
       {/* Подзадачи */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="d-flex justify-content-between align-items-center bg-dark"
+        style={{ position: 'sticky', top: '56px', zIndex: 100, padding: '12px 0', marginBottom: '1rem' }}>
         <h5 className="mb-0"><i className="bi bi-diagram-3 me-2"></i>Подзадачи ({subtasks.length})</h5>
         <button className="btn btn-outline-primary btn-sm" onClick={() => openSubtaskModal(undefined)}>
           <i className="bi bi-plus me-1"></i>Добавить подзадачу
@@ -335,13 +346,14 @@ export default function TaskDetailPage() {
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={subtasks.map(s => s.id)} strategy={verticalListSortingStrategy}>
           {subtasks.map(subtask => (
-            <SortableSubtaskRow
-              key={subtask.id}
-              task={subtask}
-              onEdit={() => openEditSubtaskModal(subtask)}
-              onDelete={() => setConfirmDeleteSubtask({ id: subtask.id, title: subtask.title })}
-              onStatusChange={status => handleSubtaskStatusChange(subtask, status)}
-            />
+            <div key={subtask.id} id={`subtask-${subtask.id}`}>
+              <SortableSubtaskRow
+                task={subtask}
+                onEdit={() => openEditSubtaskModal(subtask)}
+                onDelete={() => setConfirmDeleteSubtask({ id: subtask.id, title: subtask.title })}
+                onStatusChange={status => handleSubtaskStatusChange(subtask, status)}
+              />
+            </div>
           ))}
         </SortableContext>
       </DndContext>
