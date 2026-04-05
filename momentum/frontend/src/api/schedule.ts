@@ -1,5 +1,5 @@
 import { apiClient } from './client.ts'
-import type { ScheduledSlot, DaySchedule, FeedDay } from '../types/index.ts'
+import type { ScheduledSlot, DaySchedule, FeedDay, RecurringCreateData } from '../types/index.ts'
 
 export const scheduleApi = {
   getRange: (dateFrom: string, dateTo: string) =>
@@ -10,7 +10,10 @@ export const scheduleApi = {
     apiClient.get<FeedDay[]>('/schedule/feed', { params: { from, limit } }).then(r => r.data),
   create: (data: { taskId: number; date: string; timeFrom: string; timeTo: string }) =>
     apiClient.post<ScheduledSlot>('/schedule', data).then(r => r.data),
-  update: (id: number, data: { timeFrom?: string; timeTo?: string; comment?: string }) =>
+  createRecurring: (data: RecurringCreateData) =>
+    apiClient.post<{ created: number; ruleId: number }>('/schedule/recurring', data).then(r => r.data),
+  update: (id: number, data: { timeFrom?: string; timeTo?: string; comment?: string; scope?: 'single' | 'future' }) =>
     apiClient.put<ScheduledSlot>(`/schedule/${id}`, data).then(r => r.data),
-  delete: (id: number) => apiClient.delete(`/schedule/${id}`).then(r => r.data),
+  delete: (id: number, scope: 'single' | 'future' = 'single') =>
+    apiClient.delete(`/schedule/${id}`, { params: { scope } }).then(r => r.data),
 }

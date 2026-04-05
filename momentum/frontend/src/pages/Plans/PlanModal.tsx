@@ -7,9 +7,11 @@ interface Props {
   onHide: () => void
   onSave: (data: { title: string; description?: string; ideaId?: number | null }) => Promise<void>
   initialData?: Plan
+  defaultIdeaId?: number
+  defaultIdeaTitle?: string
 }
 
-export default function PlanModal({ show, onHide, onSave, initialData }: Props) {
+export default function PlanModal({ show, onHide, onSave, initialData, defaultIdeaId, defaultIdeaTitle }: Props) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [ideaId, setIdeaId] = useState<number | null>(null)
@@ -24,16 +26,18 @@ export default function PlanModal({ show, onHide, onSave, initialData }: Props) 
     if (show) {
       ideasApi.getAll().then(ideas => {
         setAllIdeas(ideas)
-        const initial = initialData?.ideaId ? ideas.find(i => i.id === initialData.ideaId) : null
-        setIdeaSearch(initial?.title ?? '')
+        const presetId = initialData?.ideaId ?? defaultIdeaId ?? null
+        const preset = presetId ? ideas.find(i => i.id === presetId) : null
+        setIdeaSearch(preset?.title ?? defaultIdeaTitle ?? '')
+        setIdeaId(preset?.id ?? (defaultIdeaId ?? null))
       }).catch(console.error)
       setTitle(initialData?.title ?? '')
       setDescription(initialData?.description ?? '')
-      setIdeaId(initialData?.ideaId ?? null)
+      if (!defaultIdeaId) setIdeaId(initialData?.ideaId ?? null)
       setDropdownOpen(false)
       setError(null)
     }
-  }, [show, initialData])
+  }, [show, initialData, defaultIdeaId, defaultIdeaTitle])
 
   // Закрытие дропдауна при клике вне
   useEffect(() => {

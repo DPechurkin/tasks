@@ -8,6 +8,7 @@ import { ru } from 'date-fns/locale'
 import LoadingSpinner from '../../components/LoadingSpinner.tsx'
 import ConfirmModal from '../../components/ConfirmModal.tsx'
 import IdeaModal from './IdeaModal.tsx'
+import PlanModal from '../Plans/PlanModal.tsx'
 
 export default function IdeaDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -26,6 +27,7 @@ export default function IdeaDetailPage() {
   const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null)
   const [linkingPlan, setLinkingPlan] = useState(false)
   const [linkError, setLinkError] = useState<string | null>(null)
+  const [createPlanOpen, setCreatePlanOpen] = useState(false)
 
   useEffect(() => {
     if (!id) return
@@ -82,6 +84,15 @@ export default function IdeaDetailPage() {
       setLinkingPlan(false)
     }
   }, [idea, selectedPlanId])
+
+  const handleCreatePlan = useCallback(async (data: { title: string; description?: string; ideaId?: number | null }) => {
+    if (!idea) return
+    const created = await plansApi.create({ ...data, ideaId: idea.id })
+    // Привязываем через linkPlan чтобы идея обновила список
+    try { await ideasApi.linkPlan(idea.id, created.id) } catch { /* уже привязан через ideaId */ }
+    const updated = await ideasApi.getById(idea.id)
+    setIdea(updated)
+  }, [idea])
 
   const handleUnlinkPlan = useCallback(async (planId: number) => {
     if (!idea) return
@@ -179,12 +190,14 @@ export default function IdeaDetailPage() {
             Привязанные планы
             <span className="badge bg-secondary ms-2">{idea.plans?.length ?? 0}</span>
           </h5>
-          <button
-            className="btn btn-outline-info btn-sm"
-            onClick={handleOpenLinkPlan}
-          >
-            <i className="bi bi-link-45deg me-1"></i>Привязать план
-          </button>
+          <div className="d-flex gap-2">
+            <button className="btn btn-primary btn-sm" onClick={() => setCreatePlanOpen(true)}>
+              <i className="bi bi-plus me-1"></i>Новый план
+            </button>
+            <button className="btn btn-outline-info btn-sm" onClick={handleOpenLinkPlan}>
+              <i className="bi bi-link-45deg me-1"></i>Привязать план
+            </button>
+          </div>
         </div>
 
         {/* Форма привязки плана */}
@@ -284,6 +297,14 @@ export default function IdeaDetailPage() {
         onHide={() => setEditModalOpen(false)}
         onSave={handleEditSave}
         initialData={idea}
+      />
+
+      <PlanModal
+        show={createPlanOpen}
+        onHide={() => setCreatePlanOpen(false)}
+        onSave={handleCreatePlan}
+        defaultIdeaId={idea.id}
+        defaultIdeaTitle={idea.title}
       />
 
       {/* Подтверждение удаления */}

@@ -50,6 +50,20 @@ export const tasks = sqliteTable('tasks', {
     .default(sql`(datetime('now'))`),
 })
 
+export const recurrenceRules = sqliteTable('recurrence_rules', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  taskId: integer('task_id').notNull().references(() => tasks.id, { onDelete: 'cascade' }),
+  type: text('type', { enum: ['weekly', 'monthly', 'yearly'] }).notNull(),
+  daysOfWeek: text('days_of_week'),   // JSON: [1,3,5]  1=Mon…7=Sun
+  daysOfMonth: text('days_of_month'), // JSON: [1,15]
+  month: integer('month'),            // 1-12 for yearly
+  day: integer('day'),                // 1-31 for yearly
+  timeFrom: text('time_from').notNull(),
+  timeTo: text('time_to').notNull(),
+  endDate: text('end_date').notNull(), // YYYY-MM-DD
+  createdAt: text('created_at').notNull().default(sql`(datetime('now'))`),
+})
+
 export const scheduledSlots = sqliteTable('scheduled_slots', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   taskId: integer('task_id')
@@ -59,6 +73,7 @@ export const scheduledSlots = sqliteTable('scheduled_slots', {
   timeFrom: text('time_from').notNull(), // HH:MM
   timeTo: text('time_to').notNull(), // HH:MM
   comment: text('comment'),
+  recurrenceRuleId: integer('recurrence_rule_id'), // FK defined in migration
   createdAt: text('created_at')
     .notNull()
     .default(sql`(datetime('now'))`),
@@ -79,3 +94,6 @@ export type NewTask = typeof tasks.$inferInsert
 
 export type ScheduledSlot = typeof scheduledSlots.$inferSelect
 export type NewScheduledSlot = typeof scheduledSlots.$inferInsert
+
+export type RecurrenceRule = typeof recurrenceRules.$inferSelect
+export type NewRecurrenceRule = typeof recurrenceRules.$inferInsert

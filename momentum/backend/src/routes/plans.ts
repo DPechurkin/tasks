@@ -140,7 +140,13 @@ export async function plansRoutes(app: FastifyInstance) {
       })
       .returning()
 
-    return reply.code(201).send(inserted[0])
+    // Возвращаем с ideaTitle
+    const withIdea = await db
+      .select({ id: plans.id, ideaId: plans.ideaId, ideaTitle: ideas.title, title: plans.title, description: plans.description, order: plans.order, createdAt: plans.createdAt, updatedAt: plans.updatedAt })
+      .from(plans).leftJoin(ideas, eq(ideas.id, plans.ideaId))
+      .where(eq(plans.id, inserted[0].id)).limit(1)
+
+    return reply.code(201).send(withIdea[0])
   })
 
   // PUT /plans/:id — обновление
@@ -169,13 +175,14 @@ export async function plansRoutes(app: FastifyInstance) {
     if (description !== undefined) updateData.description = description
     if (ideaId !== undefined) updateData.ideaId = ideaId
 
-    const updated = await db
-      .update(plans)
-      .set(updateData)
-      .where(eq(plans.id, id))
-      .returning()
+    await db.update(plans).set(updateData).where(eq(plans.id, id))
 
-    return reply.send(updated[0])
+    const withIdea = await db
+      .select({ id: plans.id, ideaId: plans.ideaId, ideaTitle: ideas.title, title: plans.title, description: plans.description, order: plans.order, createdAt: plans.createdAt, updatedAt: plans.updatedAt })
+      .from(plans).leftJoin(ideas, eq(ideas.id, plans.ideaId))
+      .where(eq(plans.id, id)).limit(1)
+
+    return reply.send(withIdea[0])
   })
 
   // DELETE /plans/:id

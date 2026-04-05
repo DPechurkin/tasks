@@ -56,8 +56,22 @@ export interface ScheduledSlot {
   timeFrom: string  // HH:MM
   timeTo: string    // HH:MM
   comment: string | null
+  recurrenceRuleId?: number | null
   createdAt: string
   updatedAt: string
+}
+
+export interface RecurringCreateData {
+  taskId: number
+  startDate: string
+  timeFrom: string
+  timeTo: string
+  endDate: string
+  type: 'weekly' | 'monthly' | 'yearly'
+  daysOfWeek?: number[]
+  daysOfMonth?: number[]
+  month?: number
+  day?: number
 }
 
 export interface DaySchedule {
