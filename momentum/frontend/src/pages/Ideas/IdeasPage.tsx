@@ -24,7 +24,6 @@ import IdeaModal from './IdeaModal.tsx'
 import ConfirmModal from '../../components/ConfirmModal.tsx'
 import LoadingSpinner from '../../components/LoadingSpinner.tsx'
 import EmptyState from '../../components/EmptyState.tsx'
-import AddItemButton from '../../components/AddItemButton.tsx'
 
 interface SortableIdeaCardProps {
   idea: Idea
@@ -168,22 +167,15 @@ export default function IdeasPage() {
         />
       )}
 
-      {/* AddItemButton перед первой */}
-      {!loading && ideas.length > 0 && (
-        <AddItemButton onClick={() => openModal(undefined)} />
-      )}
-
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={ideas.map(i => i.id)} strategy={verticalListSortingStrategy}>
           {ideas.map((idea) => (
-            <div key={idea.id}>
-              <SortableIdeaCard
-                idea={idea}
-                onEdit={() => openEditModal(idea)}
-                onDelete={() => setConfirmDelete({ id: idea.id, title: idea.title })}
-              />
-              <AddItemButton onClick={() => openModal(idea.id)} />
-            </div>
+            <SortableIdeaCard
+              key={idea.id}
+              idea={idea}
+              onEdit={() => openEditModal(idea)}
+              onDelete={() => setConfirmDelete({ id: idea.id, title: idea.title })}
+            />
           ))}
         </SortableContext>
       </DndContext>

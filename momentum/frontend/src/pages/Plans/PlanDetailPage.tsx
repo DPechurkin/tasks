@@ -26,7 +26,6 @@ import TaskModal from '../../components/TaskModal.tsx'
 import PlanModal from './PlanModal.tsx'
 import ConfirmModal from '../../components/ConfirmModal.tsx'
 import LoadingSpinner from '../../components/LoadingSpinner.tsx'
-import AddItemButton from '../../components/AddItemButton.tsx'
 
 interface SortableTaskCardProps {
   task: Task
@@ -266,23 +265,17 @@ export default function PlanDetailPage() {
         </div>
       )}
 
-      {tasks.length > 0 && (
-        <AddItemButton onClick={() => openTaskModal(undefined)} label="Новая задача" />
-      )}
-
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={tasks.map(t => t.id)} strategy={verticalListSortingStrategy}>
           {tasks.map((task, index) => (
-            <div key={task.id}>
-              <SortableTaskCard
-                task={task}
-                index={index}
-                onEdit={() => openEditTaskModal(task)}
-                onDelete={() => setConfirmDeleteTask({ id: task.id, title: task.title })}
-                onStatusChange={(status) => handleStatusChange(task, status)}
-              />
-              <AddItemButton onClick={() => openTaskModal(task.id)} label="Новая задача" />
-            </div>
+            <SortableTaskCard
+              key={task.id}
+              task={task}
+              index={index}
+              onEdit={() => openEditTaskModal(task)}
+              onDelete={() => setConfirmDeleteTask({ id: task.id, title: task.title })}
+              onStatusChange={(status) => handleStatusChange(task, status)}
+            />
           ))}
         </SortableContext>
       </DndContext>

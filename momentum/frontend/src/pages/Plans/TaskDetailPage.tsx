@@ -26,7 +26,6 @@ import LoadingSpinner from '../../components/LoadingSpinner.tsx'
 import TaskModal from '../../components/TaskModal.tsx'
 import ConfirmModal from '../../components/ConfirmModal.tsx'
 import ScheduleSlotModal from '../../components/Schedule/ScheduleSlotModal.tsx'
-import AddItemButton from '../../components/AddItemButton.tsx'
 import { format } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { isSlotPast } from '../../utils/calendar.ts'
@@ -333,22 +332,16 @@ export default function TaskDetailPage() {
         </button>
       </div>
 
-      {subtasks.length > 0 && (
-        <AddItemButton onClick={() => openSubtaskModal(undefined)} label="Подзадача" />
-      )}
-
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={subtasks.map(s => s.id)} strategy={verticalListSortingStrategy}>
           {subtasks.map(subtask => (
-            <div key={subtask.id}>
-              <SortableSubtaskRow
-                task={subtask}
-                onEdit={() => openEditSubtaskModal(subtask)}
-                onDelete={() => setConfirmDeleteSubtask({ id: subtask.id, title: subtask.title })}
-                onStatusChange={status => handleSubtaskStatusChange(subtask, status)}
-              />
-              <AddItemButton onClick={() => openSubtaskModal(subtask.id)} label="Подзадача" />
-            </div>
+            <SortableSubtaskRow
+              key={subtask.id}
+              task={subtask}
+              onEdit={() => openEditSubtaskModal(subtask)}
+              onDelete={() => setConfirmDeleteSubtask({ id: subtask.id, title: subtask.title })}
+              onStatusChange={status => handleSubtaskStatusChange(subtask, status)}
+            />
           ))}
         </SortableContext>
       </DndContext>

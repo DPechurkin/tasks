@@ -24,7 +24,6 @@ import PlanModal from './PlanModal.tsx'
 import ConfirmModal from '../../components/ConfirmModal.tsx'
 import LoadingSpinner from '../../components/LoadingSpinner.tsx'
 import EmptyState from '../../components/EmptyState.tsx'
-import AddItemButton from '../../components/AddItemButton.tsx'
 
 interface SortablePlanCardProps {
   plan: Plan
@@ -163,21 +162,15 @@ export default function PlansPage() {
         />
       )}
 
-      {!loading && plans.length > 0 && (
-        <AddItemButton onClick={() => openModal(undefined)} label="Новый план" />
-      )}
-
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={plans.map(p => p.id)} strategy={verticalListSortingStrategy}>
           {plans.map((plan) => (
-            <div key={plan.id}>
-              <SortablePlanCard
-                plan={plan}
-                onEdit={() => openEditModal(plan)}
-                onDelete={() => setConfirmDelete({ id: plan.id, title: plan.title })}
-              />
-              <AddItemButton onClick={() => openModal(plan.id)} label="Новый план" />
-            </div>
+            <SortablePlanCard
+              key={plan.id}
+              plan={plan}
+              onEdit={() => openEditModal(plan)}
+              onDelete={() => setConfirmDelete({ id: plan.id, title: plan.title })}
+            />
           ))}
         </SortableContext>
       </DndContext>
