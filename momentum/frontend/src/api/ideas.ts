@@ -10,7 +10,7 @@ export const ideasApi = {
     apiClient.put<Idea>(`/ideas/${id}`, data).then(r => r.data),
   delete: (id: number) => apiClient.delete(`/ideas/${id}`).then(r => r.data),
   reorder: (id: number, newOrder: number) =>
-    apiClient.put('/ideas/reorder', { id, newOrder }).then(r => r.data),
+    apiClient.patch(`/ideas/${id}/order`, { newOrder }).then(r => r.data),
   linkPlan: (ideaId: number, planId: number) =>
     apiClient.post(`/ideas/${ideaId}/plans`, { planId }).then(r => r.data),
   unlinkPlan: (ideaId: number, planId: number) =>

@@ -10,5 +10,5 @@ export const plansApi = {
     apiClient.put<Plan>(`/plans/${id}`, data).then(r => r.data),
   delete: (id: number) => apiClient.delete(`/plans/${id}`).then(r => r.data),
   reorder: (id: number, newOrder: number) =>
-    apiClient.put('/plans/reorder', { id, newOrder }).then(r => r.data),
+    apiClient.patch(`/plans/${id}/order`, { newOrder }).then(r => r.data),
 }

@@ -11,5 +11,5 @@ export const tasksApi = {
     apiClient.put<Task>(`/tasks/${id}`, data).then(r => r.data),
   delete: (id: number) => apiClient.delete(`/tasks/${id}`).then(r => r.data),
   reorder: (planId: number, id: number, newOrder: number) =>
-    apiClient.put(`/plans/${planId}/tasks/reorder`, { id, newOrder }).then(r => r.data),
+    apiClient.patch(`/plans/${planId}/tasks/${id}/order`, { newOrder }).then(r => r.data),
 }
