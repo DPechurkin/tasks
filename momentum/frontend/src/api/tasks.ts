@@ -12,4 +12,6 @@ export const tasksApi = {
   delete: (id: number) => apiClient.delete(`/tasks/${id}`).then(r => r.data),
   reorder: (planId: number, id: number, newOrder: number) =>
     apiClient.patch(`/plans/${planId}/tasks/${id}/order`, { newOrder }).then(r => r.data),
+  createSubtask: (parentTaskId: number, data: { title: string; description?: string; status?: string; insertAfter?: number | null }) =>
+    apiClient.post<Task>(`/tasks/${parentTaskId}/subtasks`, data).then(r => r.data),
 }

@@ -54,6 +54,16 @@ export default function TaskCard({ task, index, onEdit, onDelete, onStatusChange
               </div>
               <div className="d-flex gap-1 ms-2 align-items-center flex-wrap justify-content-end">
                 <StatusDropdown status={task.status} onChange={onStatusChange} />
+                {(task.subtasksCount ?? 0) > 0 && (
+                  <Link
+                    to={`/plans/${task.planId}/tasks/${task.id}`}
+                    className="badge bg-info text-dark text-decoration-none"
+                    title="Подзадачи"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    <i className="bi bi-diagram-3 me-1"></i>{task.subtasksCount}
+                  </Link>
+                )}
                 {(task.slotsCount ?? 0) > 0 && (
                   <span className="badge bg-secondary">
                     <i className="bi bi-calendar3 me-1"></i>{task.slotsCount}

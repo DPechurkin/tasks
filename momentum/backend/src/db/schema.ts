@@ -33,6 +33,7 @@ export const tasks = sqliteTable('tasks', {
   planId: integer('plan_id')
     .notNull()
     .references(() => plans.id, { onDelete: 'cascade' }),
+  parentTaskId: integer('parent_task_id'), // FK to tasks(id) ON DELETE CASCADE — задаётся в миграции
   title: text('title').notNull(),
   description: text('description'),
   status: text('status', {

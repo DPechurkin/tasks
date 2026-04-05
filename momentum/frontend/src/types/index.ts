@@ -30,13 +30,17 @@ export interface Task {
   planTitle?: string
   ideaId?: number | null
   ideaTitle?: string | null
+  parentTaskId?: number | null
+  parentTaskTitle?: string | null
   title: string
   description: string | null
   status: TaskStatus
   order: number
   slotsCount?: number
   commentsCount?: number
+  subtasksCount?: number
   slots?: ScheduledSlot[]
+  subtasks?: Task[]
   createdAt: string
   updatedAt: string
 }
